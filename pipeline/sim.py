@@ -202,11 +202,15 @@ for i,x in a[a.tipo=='encaixe'].sort_values('prazo').iterrows():
                 antes=[d for d in cands if d<=x.prazo]
                 d=min(antes or cands,key=lambda d:abs((d-x.ideal).days))
                 u=x.equipe if isinstance(x.equipe,str) and x.equipe in TEAMS else None
+                S=est(d); troca=''
+                if u is None or S[u]['casas']>=SPEC[T2N[u]][3] or not disp(u,d):
+                    c=[w for w in regular if disp(w,d) and T2N[w] not in SO9 and w not in x.bloq and S[w]['casas']<SPEC[w and T2N[w]][3]]
+                    if c: u=min(c,key=lambda w:S[w]['casas']-SPEC[T2N[w]][2]); troca=' (equipe da última já no máximo: outra equipe)'
                 if u:
                     S=est(d); a.at[i,'data']=d; a.at[i,'dia']=DN[d.dayofweek]
                     S[u]['busy'].append((hr_,hr_+x.horas+TRAV)); S[u]['casas']+=1; S[u]['load']+=x.horas
                     a.at[i,'ini']=hr_; a.at[i,'equipe']=u
-                    a.at[i,'obs']=f"PROVÁVEL: mesmo dia, horário e equipe da última limpeza (prazo {x.prazo.strftime('%d/%m')}) · equipe passa do normal no dia"
+                    a.at[i,'obs']=(f"Já marcado na agenda{troca} · equipe passa do normal no dia" if x.ja_marcado else None) or f"PROVÁVEL: mesmo dia e horário da última limpeza{troca} (prazo {x.prazo.strftime('%d/%m')}) · equipe passa do normal no dia"
                     ok=True
     if not ok:
         if x.prazo>HZ1:
@@ -244,10 +248,11 @@ def pag(t,g):
     k=T2N[t]; rule=SPEC[k][5]; rec=g.valor.sum(); wk=g.data.iloc[0].dayofweek>=5
     if rule=='70' or (rule=='debora' and wk): return round(rec*0.7)
     if rule=='debora': return 200 if (len(g)>=2 and rec>=360) else 160
+    if str(rule).startswith('fixo:'): return float(rule.split(':')[1])
     return None
 td=[]
 for (dt,t),g in a[a.equipe.notna()].groupby(['data','equipe']):
-    p=pag(t,g); td.append(dict(id=dt.strftime('%m%d')+'-'+T2N[t],data_txt=dt.strftime('%d/%m'),equipe=t,pessoas=SPEC[T2N[t]][1],casas=len(g),normal=SPEC[T2N[t]][2],receita=round(g.valor.sum()),pagamento=p if p is not None else '',margem=round(g.valor.sum()-p) if p is not None else '',receita_por_pessoa=round(g.valor.sum()/SPEC[T2N[t]][1])))
+    p=pag(t,g); td.append(dict(id=dt.strftime('%m%d')+'-'+T2N[t],data_txt=dt.strftime('%d/%m'),equipe=t,pessoas=SPEC[T2N[t]][1],casas=len(g),normal=SPEC[T2N[t]][2],receita=round(g.valor.sum()),pagamento=p if p is not None else '',margem=round(g.valor.sum()-p) if p is not None else '',receita_por_pessoa=round(g.valor.sum()/SPEC[T2N[t]][1]),alerta=(f"abaixo da meta de ${round(p/(1-R['equipes'][T2N[t]]['margem_meta']))}" if p is not None and R['equipes'][T2N[t]].get('margem_meta') and g.valor.sum()<p/(1-R['equipes'][T2N[t]]['margem_meta']) else '')))
 pd.DataFrame(td).to_csv('out/equipe_dia_sim.csv',index=False)
 print(pd.DataFrame(td).groupby('equipe')[['casas','receita','receita_por_pessoa']].mean().round(1))
 print(a.obs.str.split(':').str[0].value_counts().head(10))

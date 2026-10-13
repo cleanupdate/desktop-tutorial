@@ -28,9 +28,11 @@
    "nome": "Ana",
    "pessoas": 1,
    "casas_normal": 2,
-   "casas_max": 3,
+   "casas_max": 2,
    "dias": "seg-sex",
-   "pagamento": "?"
+   "pagamento": "fixo:160",
+   "margem_meta": 0.35,
+   "obs": "1 pessoa, diária $160; ideal que as 2 casas somem $246+ (35% para a empresa). Priorizar casas que ela já fez."
   },
   "6": {
    "nome": "Paula L.",
