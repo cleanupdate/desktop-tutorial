@@ -35,6 +35,9 @@ def _row(dt,x,tp,**kw):
         hi=float(x.hi_med) if pd.notna(x.hi_med) else 10.0,horas=max(1.0,x.horas_mediana) if pd.notna(x.horas_mediana) else 2.0,equipe=x.equipe,tipo=tp)
     d.update(kw); return d
 for dt,x,tp in out: rows.append(_row(dt,x,tp))
+_dd=pd.read_pickle('work/d.pkl'); _dd=_dd[(_dd.status=='Concluído')&~_dd.tipo.astype(str).str.contains('Relimpeza|Check')].sort_values('data')
+_t=pd.to_datetime(_dd.ini,errors='coerce'); _dd['hh']=(( _t.dt.hour+_t.dt.minute/60)*2).round()/2
+LAST={c:(int(g.data.iloc[-1].dayofweek),float(g.hh.iloc[-1]) if pd.notna(g.hh.iloc[-1]) and 7<=g.hh.iloc[-1]<=17 else 9.0) for c,g in _dd.groupby('cliente')}
 # ---------- encaixes: janela de 1 semana antes até 1 semana depois da data ideal ----------
 fu=pd.read_pickle('work/fut.pkl') if os.path.exists('work/fut.pkl') else pd.DataFrame(columns=['status','ini','cliente','dur','data'])
 _k=lambda s:str(s).split('(')[0].strip().lower()
@@ -189,6 +192,22 @@ for i,x in a[a.tipo=='encaixe'].sort_values('prazo').iterrows():
             if c:
                 a.at[i,'data']=d; a.at[i,'dia']=DN[d.dayofweek]
                 poe(S,i,c[0],slot(S,c[0],8.5,x.horas,17.5-x.horas),x,f"Encaixe · prazo {x.prazo.strftime('%d/%m')} · precisa de reserva ({c[0].split('(')[1][:-1]})"); ok=True; break
+    if not ok and x.prazo<=HZ1:
+        # provável: mesmo dia da semana, horário e equipe da última limpeza (encaixe, sem garantia de sobra)
+        lv=LAST.get(x.cliente)
+        if lv is not None:
+            wd_,hr_=lv
+            cands=[d for d in pd.date_range(HZ0,HZ1) if d.dayofweek==wd_]
+            if cands:
+                antes=[d for d in cands if d<=x.prazo]
+                d=min(antes or cands,key=lambda d:abs((d-x.ideal).days))
+                u=x.equipe if isinstance(x.equipe,str) and x.equipe in TEAMS else None
+                if u:
+                    S=est(d); a.at[i,'data']=d; a.at[i,'dia']=DN[d.dayofweek]
+                    S[u]['busy'].append((hr_,hr_+x.horas+TRAV)); S[u]['casas']+=1; S[u]['load']+=x.horas
+                    a.at[i,'ini']=hr_; a.at[i,'equipe']=u
+                    a.at[i,'obs']=f"PROVÁVEL: mesmo dia, horário e equipe da última limpeza (prazo {x.prazo.strftime('%d/%m')}) · equipe passa do normal no dia"
+                    ok=True
     if not ok:
         if x.prazo>HZ1:
             a.at[i,'obs']=f"Fica para depois de {HZ1.strftime('%d/%m')} (prazo {x.prazo.strftime('%d/%m')})"
