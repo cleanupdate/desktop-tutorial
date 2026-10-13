@@ -201,6 +201,7 @@ for i,x in a[a.tipo=='encaixe'].sort_values('prazo').iterrows():
             if cands:
                 antes=[d for d in cands if d<=x.prazo]
                 d=min(antes or cands,key=lambda d:abs((d-x.ideal).days))
+                if x.ja_marcado: d=x.data; hr_=max(8.0,x.pref) if pd.notna(x.pref) else hr_
                 u=x.equipe if isinstance(x.equipe,str) and x.equipe in TEAMS else None
                 S=est(d); troca=''
                 if u is None or S[u]['casas']>=SPEC[T2N[u]][3] or not disp(u,d):
