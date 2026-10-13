@@ -43,7 +43,7 @@ a['hi']=[HREAL.get(_k(c),h) for c,h in zip(a.cliente,a.hi)]
 fu['d']=pd.to_numeric(fu.dur.astype(str).str.extract(r'([\d.]+)')[0],errors='coerce')
 HDUR=fu[fu.d>0].assign(k=fu.cliente.map(_k)).groupby('k').d.median().to_dict()
 # duração da agenda real não é usada: são janelas, não tempo de limpeza
-from people import equipe_proxima, BLOQ, ATIVAS
+from people import equipe_proxima, BLOQ, ATIVAS, RELIMP
 CAP=8.0; TRAV=0.5; TOL=1.0
 def h2s(h): hh=round(h*2)/2; return f"{int(hh)}:{'30' if hh%1 else '00'}"
 def dur(h): hh=round(h*2)/2; return f"{int(hh)}h"+('30' if hh%1 else '')
@@ -71,6 +71,7 @@ for _,x in a.iterrows():
         tn=None
     pt.append(NUM2T[tn] if tn else None); mot.append(why); bt.append({NUM2T[b] for b in bl if b in NUM2T})
 a['equipe']=pt; a['motivo']=mot; a['bloq']=bt
+a['atencao']=a.cliente.map(lambda c:f"Teve relimpeza em {RELIMP[c][0].strftime('%d/%m')} (feita por {RELIMP[c][1]}): caprichar" if c in RELIMP else '')
 a['evitar']=a.cliente.map(lambda c:', '.join(sorted(p.split()[0] for p in BLOQ.get(c,set()) if p in ATIVAS)))
 a['pref']=(a.hi*2).round()/2
 a['ini']=np.nan; a['conflito']=''; a['obs']=''
@@ -146,7 +147,7 @@ a=a.sort_values(['data','ini','equipe'])
 a['data_txt']=a.data.dt.strftime('%d/%m')
 a['semana']=np.where(a.data<W[1],'Semana de '+W[0].strftime('%d/%m'),'Semana de '+W[1].strftime('%d/%m'))
 a['id']=a.data.dt.strftime('%m%d')+'-'+a.cliente
-a[['id','semana','data_txt','dia','horario','fim','cliente','equipe','frequencia','tipo','horas','valor','motivo','evitar','obs','conflito']].to_csv('out/agenda.csv',index=False)
+a[['id','semana','data_txt','dia','horario','fim','cliente','equipe','frequencia','tipo','horas','valor','motivo','evitar','atencao','obs','conflito']].to_csv('out/agenda.csv',index=False)
 a=a.sort_values(['data','ini','equipe'])
 # resumo equipe x dia
 def pag(t,g):

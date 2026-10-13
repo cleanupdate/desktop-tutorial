@@ -45,7 +45,11 @@ for _,m in M.iterrows():
     for cc in cl[:1]:
         B.loc[len(B)]=dict(cliente=cc,pessoas=sorted(_resolve(m.quem_nao_mandar)),data_ruim=pd.Timestamp(m.data) if m.data else END,data_relimpeza=pd.Timestamp(m.data) if m.data else END,bloqueadas=sorted(_resolve(m.quem_nao_mandar)),manual=m.motivo or 'Feedback do cliente')
 BLOQ={}
-for _,b in B.iterrows(): BLOQ.setdefault(b.cliente,set()).update(b.bloqueadas)
+# relimpeza NÃO bloqueia: só avisa a equipe para caprichar. Bloqueio só vem do feedback manual.
+RELIMP={}
+for _,b in B[B.manual==''].sort_values('data_relimpeza').iterrows():
+    RELIMP[b.cliente]=(b.data_relimpeza, ', '.join(p.split()[0] for p in b.pessoas))
+for _,b in B[B.manual!=''].iterrows(): BLOQ.setdefault(b.cliente,set()).update(b.bloqueadas)
 def equipe_proxima(cliente, fallback):
     g=c[(c.cliente==cliente)&REG]
     if not len(g): return fallback,'',set()

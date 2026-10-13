@@ -17,4 +17,4 @@ Gera `../index.html` (o painel publicado) e os CSVs em `out/`.
   `cliente,quem_nao_mandar,motivo,data` — `quem_nao_mandar` pode ser nomes (`Sara, Raiana`) ou equipe (`Eq 4`).
   Bloqueio manual é permanente até a linha ser apagada.
 
-Relimpezas do histórico viram bloqueio automaticamente (some quando a pessoa volta a limpar o cliente).
+Relimpezas do histórico NÃO bloqueiam: aparecem na agenda com ⚑ para avisar a equipe a caprichar.
