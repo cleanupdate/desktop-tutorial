@@ -1,5 +1,5 @@
 import pandas as pd, numpy as np
-import json, os
+import json, os, re
 R=json.load(open('regras.json'))
 r=pd.read_pickle('work/rfull.pkl')
 _END=pd.read_pickle('work/d.pkl').data.max()
@@ -105,9 +105,15 @@ a['pref']=(a.hi*2).round()/2
 a['ini']=np.nan; a['conflito']=''; a['obs']=''
 PRI={'Semanal':1,'Cada 2 Semanas':2}
 a['_pri']=[0 if fixa(c) else PRI.get(f,3) for c,f in zip(a.cliente,a.frequencia)]
+_dz=pd.read_pickle('work/d.pkl').sort_values('data')
+ZIP={c:int(m.group(1)) for c,e in _dz.groupby('cliente').end.last().items() if (m:=re.search(r'(\d{5})(?!.*\d{5})',str(e)))}
+def zd(S,u,c):
+    z=ZIP.get(c); zs=S[u]['zips']
+    if z is None or not zs: return 50
+    return min(abs(z-q) for q in zs)
 ST={}   # estado por dia: ocupação de cada equipe
 def est(d):
-    if d not in ST: ST[d]={t:dict(busy=[],casas=0,load=0.0) for t in TEAMS}
+    if d not in ST: ST[d]={t:dict(busy=[],casas=0,load=0.0,zips=[]) for t in TEAMS}
     return ST[d]
 def disp(t,d): return str(d.dayofweek) in SPEC[T2N[t]][4]
 def livre(S,t,s,h): return all(s+h+TRAV<=b0 or s>=b1 for b0,b1 in S[t]['busy'])
@@ -126,6 +132,7 @@ def pode(S,d,t,x,lim):
 def poe(S,i,t,s,x,nota):
     if T2N[t] in SO9 and fixa(x.cliente)!=T2N[t]: s=9.0
     S[t]['busy'].append((s,s+x.horas+TRAV)); S[t]['casas']+=1; S[t]['load']+=x.horas
+    if x.cliente in ZIP: S[t]['zips'].append(ZIP[x.cliente])
     a.at[i,'ini']=s; a.at[i,'equipe']=t; a.at[i,'obs']=nota
 regular=[u for u in TEAMS if T2N[u] not in RESERVA and T2N[u] not in EXCL]
 # 1) dia fixo: prioridade cliente fixo da equipe > semanal > quinzenal > demais; depois pelo horário
@@ -146,7 +153,7 @@ for i,x in a[a.tipo!='encaixe'].sort_values(['data','_pri','pref']).iterrows():
             poe(S,i,pref,s,x,f"{SPEC[T2N[pref]][2]+1}ª casa da equipe no dia"); feito=True; break
         c=[(tenta(u,lim,TOL),u) for u in regular]; c=[(s,u) for s,u in c if s is not None]
         if c:
-            s,u=min(c,key=lambda z:(z[0],S[z[1]]['casas']))
+            s,u=min(c,key=lambda z:(z[0],zd(S,z[1],x.cliente)>5,S[z[1]]['casas'],zd(S,z[1],x.cliente)))
             nota=(f"{pref.split(' (')[0]} cheia ou ocupada: foi para outra equipe" if pref else (x.motivo+' → '+u.split(' (')[0] if x.motivo else ''))
             if lim=='max': nota+=f" · {SPEC[T2N[u]][2]+1}ª casa da equipe"
             poe(S,i,u,s,x,nota); feito=True; break
@@ -178,9 +185,9 @@ for i,x in a[a.tipo=='encaixe'].sort_values('prazo').iterrows():
             for u in regular:
                 if T2N[u] in SO9 or not pode(S,d,u,x,lim): continue
                 s_=slot(S,u,8.5,x.horas,17.5-x.horas)
-                if s_ is not None: cand.append((u!=x.equipe,S[u]['casas']-SPEC[T2N[u]][2],s_,u))
+                if s_ is not None: cand.append((u!=x.equipe,zd(S,u,x.cliente)>5,S[u]['casas']-SPEC[T2N[u]][2],zd(S,u,x.cliente),s_,u))
             if cand:
-                _,_,s_,u=min(cand); a.at[i,'data']=d; a.at[i,'dia']=DN[d.dayofweek]
+                _,_,_,_,s_,u=min(cand); a.at[i,'data']=d; a.at[i,'dia']=DN[d.dayofweek]
                 nota='Já marcado na agenda' if x.ja_marcado else f"Encaixe · prazo {x.prazo.strftime('%d/%m')}"
                 if x.prazo<HZ0: nota+=f" · ATRASADO ({(d-x.ultima_).days//7} semanas sem limpeza)" if hasattr(x,'ultima_') else ' · ATRASADO'
                 if lim=='max': nota+=' · casa extra da equipe para não passar do prazo'
@@ -248,13 +255,19 @@ a=a.sort_values(['data','ini','equipe'])
 def pag(t,g):
     k=T2N[t]; rule=SPEC[k][5]; rec=g.valor.sum(); wk=g.data.iloc[0].dayofweek>=5
     if rule=='70' or (rule=='debora' and wk): return round(rec*0.7)
-    if rule=='debora': return 200 if (len(g)>=2 and rec>=360) else 160
-    if str(rule).startswith('fixo:'): return float(rule.split(':')[1])
+    GAS=R.get('gasolina_diaria_por_pessoa',0)
+    if rule=='debora': return (200 if (len(g)>=2 and rec>=360) else 160)+GAS
+    if str(rule).startswith('fixo:'): return float(rule.split(':')[1])+GAS*SPEC[k][1]
     return None
 td=[]
 for (dt,t),g in a[a.equipe.notna()].groupby(['data','equipe']):
     p=pag(t,g); td.append(dict(id=dt.strftime('%m%d')+'-'+T2N[t],data_txt=dt.strftime('%d/%m'),equipe=t,pessoas=SPEC[T2N[t]][1],casas=len(g),normal=SPEC[T2N[t]][2],receita=round(g.valor.sum()),pagamento=p if p is not None else '',margem=round(g.valor.sum()-p) if p is not None else '',receita_por_pessoa=round(g.valor.sum()/SPEC[T2N[t]][1]),alerta=(f"abaixo da meta de ${round(p/(1-R['equipes'][T2N[t]]['margem_meta']))}" if p is not None and R['equipes'][T2N[t]].get('margem_meta') and g.valor.sum()<p/(1-R['equipes'][T2N[t]]['margem_meta']) else '')))
-pd.DataFrame(td).to_csv('out/equipe_dia_sim.csv',index=False)
+TD=pd.DataFrame(td); TD['alerta']=''
+TD.to_csv('out/equipe_dia_sim.csv',index=False)
+_c=TD.assign(pg=pd.to_numeric(TD.pagamento,errors='coerce'))
+DS=_c.groupby('data_txt').agg(limpezas=('casas','sum'),receita=('receita','sum'),custo=('pg','sum')).reset_index()
+DS['sobra']=(DS.receita-DS.custo).round(); DS['sobra_pct']=(DS.sobra/DS.receita*100).round(); DS['abaixo_meta']=(DS.sobra_pct<R.get('margem_meta_dia',0.35)*100)&(DS.limpezas>3)
+DS.to_csv('out/dia_sim.csv',index=False); print(DS.to_string())
 print(pd.DataFrame(td).groupby('equipe')[['casas','receita','receita_por_pessoa']].mean().round(1))
 print(a.obs.str.split(':').str[0].value_counts().head(10))
 print(a.groupby(['semana','dia'],sort=False).agg(n=('cliente','size'),h=('horas','sum'),enc=('tipo',lambda s:(s=='encaixe').sum()),conf=('conflito',lambda s:(s!='').sum())))

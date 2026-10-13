@@ -138,5 +138,8 @@
   "Paula L.": "70%",
   "Rayssa": "70%",
   "Walkiria": "100%"
- }
+ },
+ "gasolina_diaria_por_pessoa": 12,
+ "margem_meta_dia": 0.35,
+ "obs_custos": "Quem recebe diária ganha $12/dia de gasolina; quem recebe 70% não recebe ajuda. Margem avaliada no dia inteiro da empresa."
 }
