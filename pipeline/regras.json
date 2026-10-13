@@ -37,9 +37,10 @@
    "pessoas": 1,
    "casas_normal": 1,
    "casas_max": 1,
-   "dias": "ter-qui",
+   "dias": "ter-sab",
    "pagamento": "70",
-   "so_9h": true
+   "so_9h": true,
+   "obs": "Casa regular só ter-qui às 9h. Solid Bite (sábado; às vezes sexta após 19h30, avisam antes) e Wingate (1x por mês no inverno, quase sempre sexta) são sempre dela."
   },
   "8": {
    "nome": "Melany + Sara + Evin",
@@ -92,7 +93,9 @@
   "Kerry": "4",
   "Catherine Amani": "4",
   "Rogeria Thomas": "1",
-  "Michele Araujo": "9"
+  "Michele Araujo": "9",
+  "Sheldon & Furtado": "6",
+  "Wingate": "6"
  },
  "clientes_ignorados": [
   "Paula Gregorio"
@@ -102,5 +105,15 @@
   "Cada 5 Semanas",
   "Cada 6 Semanas",
   "Cada 8 Semanas"
- ]
+ ],
+ "ajuste_cliente": {
+  "Sheldon & Furtado": {
+   "dia": "Sáb"
+  },
+  "Wingate": {
+   "dia": "Sex",
+   "frequencia": "Cada 4 Semanas",
+   "encaixe": false
+  }
+ }
 }

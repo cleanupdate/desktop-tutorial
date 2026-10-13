@@ -71,7 +71,7 @@ def h2s(h):
     hh=round(h*2)/2; return f"{int(hh)}:{'30' if hh%1 else '00'}"
 def dur(h): hh=round(h*2)/2; return f"{int(hh)}h"+('30' if hh%1 else '')
 # equipes atuais (out/2026) e regras de capacidade
-_D={"seg-sex": "01234", "seg-dom": "0123456", "ter-qui": "123", "qua-sex": "234"}
+_D={"seg-sex": "01234", "seg-dom": "0123456", "ter-qui": "123", "qua-sex": "234", "ter-sab": "12345"}
 R['equipes']={k:v for k,v in R['equipes'].items() if v.get('disponivel',True)}
 SPEC={k:(f"Eq {k} ({v['nome']})",v['pessoas'],v['casas_normal'],v['casas_max'],_D[v['dias']],v['pagamento']) for k,v in R['equipes'].items()}
 RESERVA={k for k,v in R['equipes'].items() if v.get('reserva')}
@@ -118,9 +118,10 @@ def pode(S,d,t,x,lim):
     n=SPEC[T2N[t]]; cap=n[2] if lim=='normal' else n[3]
     if fixa(x.cliente) and fixa(x.cliente)!=T2N[t]: return False
     if T2N[t] in EXCL and fixa(x.cliente)!=T2N[t]: return False
+    if T2N[t] in SO9 and fixa(x.cliente)!=T2N[t] and d.dayofweek not in (1,2,3): return False
     return disp(t,d) and S[t]['casas']<cap and S[t]['load']+x.horas<=CAP and t not in x.bloq
 def poe(S,i,t,s,x,nota):
-    if T2N[t] in SO9: s=9.0
+    if T2N[t] in SO9 and fixa(x.cliente)!=T2N[t]: s=9.0
     S[t]['busy'].append((s,s+x.horas+TRAV)); S[t]['casas']+=1; S[t]['load']+=x.horas
     a.at[i,'ini']=s; a.at[i,'equipe']=t; a.at[i,'obs']=nota
 regular=[u for u in TEAMS if T2N[u] not in RESERVA and T2N[u] not in EXCL]
@@ -130,7 +131,7 @@ for i,x in a[a.tipo!='encaixe'].sort_values(['data','_pri','pref']).iterrows():
     p9=lambda u: 9.0 if T2N[u] in SO9 else p
     def tenta(u,lim,tol):
         if not pode(S,d,u,x,lim): return None
-        if T2N[u] in SO9: return 9.0 if (p<=10 and livre(S,u,9.0,x.horas)) else None
+        if T2N[u] in SO9 and fixa(x.cliente)!=T2N[u]: return 9.0 if (p<=10 and livre(S,u,9.0,x.horas)) else None
         return slot(S,u,p,x.horas,p+tol)
     if pref and (s:=tenta(pref,'normal',TOL)) is not None: poe(S,i,pref,s,x,''); continue
     if fixa(x.cliente) and pref:

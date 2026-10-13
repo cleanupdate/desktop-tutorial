@@ -68,6 +68,12 @@ for cl,g in c.sort_values('data').groupby('cliente'):
         equipe=tn(teq),trocas_equipe=tch,horas_mediana=round(g.h.median(),1) if g.h.notna().any() else 2.0,
         weq=weq,multi=multi,novo_end=novo_end,enc=enc,horario_ideal=hor,variacao_horario_h=hvar,mudou_rec=mudou_rec,wshare={DN[k]:v for k,v in share.items()}))
 r=pd.DataFrame(rows)
+for _k,_v in R.get('ajuste_cliente',{}).items():
+    _m=r.cliente.str.startswith(_k)
+    if 'dia' in _v: r.loc[_m,'dia_ideal']=_v['dia']; r.loc[_m,'consistencia_pct']=100; r.loc[_m,'multi']=False
+    if 'frequencia' in _v: r.loc[_m,'frequencia']=_v['frequencia']
+    if 'encaixe' in _v: r.loc[_m,'enc']=_v['encaixe']
+    r.loc[_m,'weq']=r.loc[_m,'frequencia'].map(WEQ).fillna(0.25)
 r['classe']=np.where(r.enc,'Encaixe',np.where(r.consistencia_pct>=80,'Fixo',np.where(r.consistencia_pct>=60,'Quase fixo','Instável')))
 r['hw']=r.weq*r.horas_mediana
 def load(col):
