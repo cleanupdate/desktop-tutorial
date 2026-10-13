@@ -5,7 +5,7 @@ _d=pd.read_pickle('work/d.pkl'); PER=_d.data.min().strftime('%d/%m')+' a '+_d.da
 def rows(p):
     with open(p,encoding='utf-8') as f:
         r=csv.DictReader(f); return {'status':'ok','data':list(r),'columns':r.fieldnames}
-D={k:rows(f'out/{v}') for k,v in dict(clientes='clientes.csv',carga='carga_dia.csv',equipes='equipe_dia.csv',mensal='mensal.csv',agenda='agenda.csv',equipes_hist='equipes_hist.csv',saidas='saidas.csv',reclamacoes='reclamacoes.csv',equipe_dia_sim='equipe_dia_sim.csv').items()}
+D={k:rows(f'out/{v}') for k,v in dict(clientes='clientes.csv',carga='carga_dia.csv',equipes='equipe_dia.csv',mensal='mensal.csv',agenda='agenda.csv',equipes_hist='equipes_hist.csv',saidas='saidas.csv',reclamacoes='reclamacoes.csv',equipe_dia_sim='equipe_dia_sim.csv',fila_encaixe='fila_encaixe.csv').items()}
 page=open('pagina.html',encoding='utf-8').read().replace('--font-anthropic-sans','--font-sans').replace('--font-anthropic-serif','--font-serif')
 style=re.search(r'<style>(.*?)</style>',page,re.S).group(1)
 body=re.sub(r'<style>.*?</style>','',page,flags=re.S).replace(' dash-skeleton','')
