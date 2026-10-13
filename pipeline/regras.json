@@ -83,13 +83,16 @@
    "casas_max": 3,
    "dias": "seg-dom",
    "pagamento": "dona",
-   "reserva": true
+   "so_clientes": true,
+   "obs": "Dona da empresa: só nos clientes dela (cliente_fixo_na_equipe = 1). Cobre a Helen no jeitinho da Michele Araujo quando a Helen falta."
   }
  },
  "cliente_fixo_na_equipe": {
   "Melissa Fishman": "4",
   "Kerry": "4",
-  "Catherine Amani": "4"
+  "Catherine Amani": "4",
+  "Rogeria Thomas": "1",
+  "Michele Araujo": "9"
  },
  "clientes_ignorados": [
   "Paula Gregorio"

@@ -81,6 +81,7 @@ def fixa(c):
         if str(c).startswith(k): return v
     return None
 SO9={k for k,v in R['equipes'].items() if v.get('so_9h')}
+EXCL={k for k,v in R['equipes'].items() if v.get('so_clientes')}
 NUM2T={k:v[0] for k,v in SPEC.items()}
 TEAMS=[v[0] for k,v in SPEC.items()]
 T2N={v[0]:k for k,v in SPEC.items()}
@@ -116,12 +117,13 @@ def slot(S,t,p,h,ate):
 def pode(S,d,t,x,lim):
     n=SPEC[T2N[t]]; cap=n[2] if lim=='normal' else n[3]
     if fixa(x.cliente) and fixa(x.cliente)!=T2N[t]: return False
+    if T2N[t] in EXCL and fixa(x.cliente)!=T2N[t]: return False
     return disp(t,d) and S[t]['casas']<cap and S[t]['load']+x.horas<=CAP and t not in x.bloq
 def poe(S,i,t,s,x,nota):
     if T2N[t] in SO9: s=9.0
     S[t]['busy'].append((s,s+x.horas+TRAV)); S[t]['casas']+=1; S[t]['load']+=x.horas
     a.at[i,'ini']=s; a.at[i,'equipe']=t; a.at[i,'obs']=nota
-regular=[u for u in TEAMS if T2N[u] not in RESERVA]
+regular=[u for u in TEAMS if T2N[u] not in RESERVA and T2N[u] not in EXCL]
 # 1) dia fixo: prioridade cliente fixo da equipe > semanal > quinzenal > demais; depois pelo horário
 for i,x in a[a.tipo!='encaixe'].sort_values(['data','_pri','pref']).iterrows():
     d=x.data; S=est(d); p=max(8.0,x.pref); pref=x.equipe if isinstance(x.equipe,str) else None
