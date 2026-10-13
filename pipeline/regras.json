@@ -6,7 +6,8 @@
    "casas_normal": 3,
    "casas_max": 4,
    "dias": "seg-sex",
-   "pagamento": "?"
+   "pagamento": "fixo:320",
+   "margem_meta": 0.35
   },
   "3": {
    "nome": "Débora",
@@ -14,7 +15,8 @@
    "casas_normal": 2,
    "casas_max": 2,
    "dias": "seg-dom",
-   "pagamento": "debora"
+   "pagamento": "debora",
+   "margem_meta": 0.35
   },
   "4": {
    "nome": "Priscila + Patricia",
@@ -22,7 +24,8 @@
    "casas_normal": 3,
    "casas_max": 4,
    "dias": "seg-sex",
-   "pagamento": "?"
+   "pagamento": "fixo:320",
+   "margem_meta": 0.35
   },
   "5": {
    "nome": "Ana",
@@ -50,7 +53,8 @@
    "casas_normal": 4,
    "casas_max": 5,
    "dias": "seg-sex",
-   "pagamento": "?"
+   "pagamento": "fixo:440",
+   "margem_meta": 0.35
   },
   "9": {
    "nome": "Helen",
@@ -118,5 +122,21 @@
    "frequencia": "Cada 4 Semanas",
    "encaixe": false
   }
+ },
+ "salarios_diarios": {
+  "Ana": 160,
+  "Débora": 160,
+  "Evin": 120,
+  "Melany": 200,
+  "Patricia": 160,
+  "Priscila": 160,
+  "Raiana": 160,
+  "Sara": 120,
+  "Yasmin": 160,
+  "Helen": "70%",
+  "Leticia": "70%",
+  "Paula L.": "70%",
+  "Rayssa": "70%",
+  "Walkiria": "100%"
  }
 }
