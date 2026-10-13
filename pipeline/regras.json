@@ -72,7 +72,9 @@
    "casas_max": 2,
    "dias": "seg-dom",
    "pagamento": "70",
-   "reserva": true
+   "reserva": true,
+   "disponivel": false,
+   "obs": "Só quando ela avisar que tem dias disponíveis"
   },
   "1": {
    "nome": "Paula G.",

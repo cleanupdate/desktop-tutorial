@@ -72,6 +72,7 @@ def h2s(h):
 def dur(h): hh=round(h*2)/2; return f"{int(hh)}h"+('30' if hh%1 else '')
 # equipes atuais (out/2026) e regras de capacidade
 _D={"seg-sex": "01234", "seg-dom": "0123456", "ter-qui": "123", "qua-sex": "234"}
+R['equipes']={k:v for k,v in R['equipes'].items() if v.get('disponivel',True)}
 SPEC={k:(f"Eq {k} ({v['nome']})",v['pessoas'],v['casas_normal'],v['casas_max'],_D[v['dias']],v['pagamento']) for k,v in R['equipes'].items()}
 RESERVA={k for k,v in R['equipes'].items() if v.get('reserva')}
 FIXA=R['cliente_fixo_na_equipe']
