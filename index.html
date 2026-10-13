@@ -46,19 +46,26 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .lp .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
 .lp .heat td.n{border-radius:4px}
 .lp ul.def{margin:0;padding-left:1.2em;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);display:grid;gap:4px}
-.lp .wk{display:flex;gap:var(--cds-gap-sm);flex-wrap:wrap;margin-bottom:var(--cds-gap-md)}
-.lp .wk button{font:inherit;padding:4px 12px;border-radius:999px;border:1px solid var(--color-border-line);background:transparent;color:var(--color-fg);cursor:pointer}
-.lp .wk button[aria-pressed="true"]{background:var(--color-fg);color:var(--color-bg);border-color:var(--color-fg)}
-.lp .cal{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:var(--cds-gap-md)}
-.lp .col{min-width:0;display:flex;flex-direction:column;gap:6px}
-.lp .col h3{margin:0 0 2px;font-size:var(--cds-font-size-body);font-weight:var(--cds-font-weight-medium);display:flex;justify-content:space-between;gap:8px}
-.lp .col h3 span{color:var(--color-fg-muted);font-weight:400;font-size:var(--cds-font-size-caption)}
-.lp .ev{border:1px solid var(--color-border-line);border-radius:8px;padding:6px 8px;font-size:var(--cds-font-size-caption);display:grid;gap:1px;background:var(--color-bg)}
-.lp .ev .t{font-variant-numeric:tabular-nums;color:var(--color-fg-muted)}
-.lp .ev .c{font-weight:var(--cds-font-weight-medium);color:var(--color-fg)}
-.lp .ev .e{color:var(--color-fg-muted)}
-.lp .ev .tag{color:var(--color-warn)}
-.lp .ev.enc{border-style:dashed}
+.lp .nav{display:flex;align-items:center;justify-content:space-between;gap:var(--cds-gap-sm);background:var(--color-fg);color:var(--color-bg);border-radius:6px;padding:6px 8px;margin-bottom:var(--cds-gap-md)}
+.lp .nav button{all:unset;cursor:pointer;padding:2px 12px;font-size:1.1rem;line-height:1;border-radius:4px}
+.lp .nav button:focus-visible{outline:2px solid var(--color-bg)}
+.lp .nav button:disabled{opacity:.3;cursor:default}
+.lp .nav .dt{font-weight:var(--cds-font-weight-medium);letter-spacing:.04em;text-transform:uppercase;font-size:var(--cds-font-size-caption);text-align:center}
+.lp .nav .dt small{display:block;font-weight:400;opacity:.75;text-transform:none;letter-spacing:0}
+.lp .teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr));gap:var(--cds-gap-md)}
+.lp .tm{border-radius:6px;overflow:hidden;background:var(--color-bg);border:1px solid var(--color-border-line);min-width:0;display:flex;flex-direction:column}
+.lp .tm .hd{background:var(--tc);color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:5px 8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.lp .tm .hd small{font-weight:400;text-transform:none;letter-spacing:0;opacity:.9;font-size:var(--cds-font-size-caption)}
+.lp .tm .bd{padding:6px;display:flex;flex-direction:column;gap:4px}
+.lp .tm .av{display:flex;gap:4px;margin-bottom:2px}
+.lp .tm .av span{width:28px;height:28px;border-radius:6px;background:var(--tc);color:#fff;display:grid;place-items:center;font-size:.75rem;font-weight:700}
+.lp .tm .job{display:flex;border-radius:4px;overflow:hidden;background:color-mix(in srgb,var(--tc) 32%,var(--color-panel));font-size:var(--cds-font-size-caption);min-width:0}
+.lp .tm .job .h{background:color-mix(in srgb,var(--tc) 70%,#000 0%);color:#fff;padding:4px 6px;white-space:nowrap;font-variant-numeric:tabular-nums;min-width:4.4em;text-align:center}
+.lp .tm .job .n{padding:4px 6px;color:var(--color-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.lp .tm .job.enc{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--tc) 22%,var(--color-panel)) 0 6px,color-mix(in srgb,var(--tc) 34%,var(--color-panel)) 6px 12px)}
+.lp .tm .job .f{margin-left:auto;padding:4px 6px;color:var(--color-warn);font-weight:700}
+.lp .tm .vazio{color:var(--color-fg-muted);font-size:var(--cds-font-size-caption);padding:4px 2px}
+.lp .key{display:flex;flex-wrap:wrap;gap:var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-top:var(--cds-gap-md)}
 [data-dash-source-state=empty]{color:transparent}
 [data-dash-source-state=refreshing]{opacity:.5;transition:opacity var(--cds-dur-slow)}
 </style>
@@ -111,9 +118,10 @@ window.dash=(function(){const calcs={},fns=[];
   <section class="card" id="agenda-card">
     <h2>Simulação da agenda: próximas 2 semanas</h2>
     <p class="note" id="agenda-resumo" data-source="agenda_resumo" data-field="texto" data-row="0">—</p>
-    <div class="wk" role="group" aria-label="Semana"><button id="wk1" aria-pressed="true">Semana de 19/out</button><button id="wk2" aria-pressed="false">Semana de 26/out</button></div>
-    <div class="cal" id="agenda" data-source="agenda"></div>
-    <p class="note" style="margin-top:var(--cds-gap-md)">Cada cliente entra na semana em que vence pela frequência, no dia e horário fixos. Se a equipe de costume já está ocupada no horário ou passaria de 8h no dia, a visita vai para outra equipe livre. Encaixes (borda tracejada) entram no fim do dia de quem tem folga.</p>
+    <div class="nav"><button id="dprev" aria-label="Dia anterior">‹</button><div class="dt" id="dlabel">—</div><button id="dnext" aria-label="Próximo dia">›</button></div>
+    <div class="teams" id="agenda" data-source="agenda"></div>
+    <div class="key"><span><b style="color:var(--color-warn)">↻</b> trocou de equipe (a de costume estava ocupada)</span><span>Listrado = encaixe</span></div>
+    <p class="note" style="margin-top:var(--cds-gap-sm)">Cada cliente entra no dia em que vence pela frequência, no horário fixo. Se a equipe de costume já está ocupada no horário ou passaria de 8h no dia, a visita vai para outra equipe livre. Encaixes entram no fim do dia de quem tem folga.</p>
   </section>
 
   <section class="grid">
@@ -212,29 +220,44 @@ const ph=(tb,n)=>{tb.replaceChildren();const tr=document.createElement('tr'),td=
 dash.calc('agenda_resumo',{title:'Resumo da simulação',description:'Conta visitas, encaixes e trocas de equipe na agenda simulada.',inputs:['agenda'],
   fn:(agenda)=>{const n=agenda.length,e=agenda.filter(v=>v.tipo==='encaixe').length,t=agenda.filter(v=>v.obs).length,c=agenda.filter(v=>v.conflito).length;
     return [{texto:`${n} limpezas em 2 semanas, ${e} delas de encaixe. Todos os horários combinados cabem, mas ${t} visitas precisam de outra equipe porque a de costume está ocupada no horário${c?`; ${c} ficam com atraso`:''}. Fixar também a equipe de cada cliente resolve isso.`}];}});
-let wkSel='Semana de 19/out';
+const TCOL=['#7e57c2','#c0855a','#4f93b8','#6aa84f','#b0a24a','#3fae8a','#b8578f','#8fa83f','#c0504d','#a8913a','#8a5cc2','#3aa6a0'];
+let dayIdx=0;
+const pdt=s=>{const[d,m]=s.split('/');return Number(m)*100+Number(d)};
+const ptm=s=>{const[h,m]=s.split(':');return Number(h)*60+Number(m)};
+const fmt12=s=>{let[h,m]=s.split(':').map(Number);const ap=h<12?'am':'pm';h=h%12||12;return `${h}:${String(m).padStart(2,'0')}${ap}`};
+const MESES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 function drawAgenda(res){
   const box=document.getElementById('agenda');box.replaceChildren();
-  if(res.status!=='ok')return;
-  const rows=res.data.filter(r=>r.semana===wkSel);
-  const days=[...new Set(rows.map(r=>r.data_txt))].sort((a,b)=>{const p=s=>{const[d,m]=s.split('/');return Number(m)*100+Number(d)};return p(a)-p(b);});
-  days.forEach(dt=>{
-    const vs=rows.filter(r=>r.data_txt===dt).sort((a,b)=>{const p=s=>{const[h,m]=s.split(':');return Number(h)*60+Number(m)};return p(a.horario)-p(b.horario);});
-    const col=document.createElement('div');col.className='col';
-    const h=document.createElement('h3');h.textContent=vs[0].dia+' '+dt;const sp=document.createElement('span');
-    sp.textContent=`${vs.length} · ${d3.sum(vs,v=>Number(v.horas)).toLocaleString('pt-BR',{maximumFractionDigits:1})}h`;h.append(sp);col.append(h);
-    vs.forEach(v=>{const ev=document.createElement('div');ev.className='ev'+(v.tipo==='encaixe'?' enc':'');
-      const t=document.createElement('div');t.className='t';t.textContent=`${v.horario}–${v.fim}`+(v.tipo==='encaixe'?' · encaixe':'');
-      const c=document.createElement('div');c.className='c';c.textContent=v.cliente.split(' (')[0];
-      const e=document.createElement('div');e.className='e';e.textContent=v.equipe;
-      ev.append(t,c,e);
-      if(v.obs||v.conflito){const g=document.createElement('div');g.className='tag';g.textContent=v.conflito||v.obs;ev.append(g);}
-      col.append(ev);});
-    box.append(col);});
+  const lab=document.getElementById('dlabel');
+  if(res.status!=='ok'){lab.textContent='—';return;}
+  const days=[...new Set(res.data.map(r=>r.data_txt))].sort((a,b)=>pdt(a)-pdt(b));
+  dayIdx=Math.max(0,Math.min(dayIdx,days.length-1));
+  const dt=days[dayIdx],rows=res.data.filter(r=>r.data_txt===dt);
+  const[dd,mm]=dt.split('/');
+  lab.textContent=`${rows[0].dia}, ${MESES[Number(mm)-1]} ${Number(dd)}`;
+  const sm=document.createElement('small');sm.textContent=`${rows.length} limpezas · ${d3.sum(rows,r=>Number(r.horas)).toLocaleString('pt-BR',{maximumFractionDigits:1})}h`;lab.append(sm);
+  document.getElementById('dprev').disabled=dayIdx===0;document.getElementById('dnext').disabled=dayIdx===days.length-1;
+  const allTeams=[...new Set(res.data.map(r=>r.equipe))].sort((a,b)=>parseInt(a.slice(3))-parseInt(b.slice(3)));
+  allTeams.forEach(t=>{
+    const num=parseInt(t.slice(3)),js=rows.filter(r=>r.equipe===t).sort((a,b)=>ptm(a.horario)-ptm(b.horario));
+    const card=document.createElement('div');card.className='tm';card.style.setProperty('--tc',TCOL[(num-1)%TCOL.length]);
+    const hd=document.createElement('div');hd.className='hd';hd.textContent='Equipe '+num;
+    if(js.length){const sm=document.createElement('small');sm.textContent=d3.sum(js,r=>Number(r.horas)).toLocaleString('pt-BR',{maximumFractionDigits:1})+'h';hd.append(sm);}
+    const bd=document.createElement('div');bd.className='bd';
+    const nm=(t.match(/\((.*)\)/)||[,''])[1].split('+').map(x=>x.trim()).filter(Boolean);
+    const av=document.createElement('div');av.className='av';nm.forEach(n=>{const sp=document.createElement('span');sp.textContent=n.slice(0,2).toUpperCase();sp.title=n;av.append(sp);});bd.append(av);
+    if(!js.length){const v=document.createElement('div');v.className='vazio';v.textContent='Sem limpezas';bd.append(v);}
+    js.forEach(r=>{const j=document.createElement('div');j.className='job'+(r.tipo==='encaixe'?' enc':'');
+      j.title=`${r.cliente} · ${r.horario}–${r.fim} · ${r.frequencia}`+(r.obs?` · ${r.obs}`:'')+(r.conflito?` · ${r.conflito}`:'');
+      const h=document.createElement('span');h.className='h';h.textContent=fmt12(r.horario);
+      const n=document.createElement('span');n.className='n';n.textContent=r.cliente.split(' (')[0];
+      j.append(h,n);
+      if(r.obs||r.conflito){const f=document.createElement('span');f.className='f';f.textContent='↻';j.append(f);}
+      bd.append(j);});
+    card.append(hd,bd);box.append(card);});
 }
-['wk1','wk2'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{wkSel=e.currentTarget.textContent;
-  ['wk1','wk2'].forEach(j=>document.getElementById(j).setAttribute('aria-pressed',String(j===id)));drawAgenda(dash.data('agenda'));}));
-
+document.getElementById('dprev').addEventListener('click',()=>{dayIdx--;drawAgenda(dash.data('agenda'));});
+document.getElementById('dnext').addEventListener('click',()=>{dayIdx++;drawAgenda(dash.data('agenda'));});
 let sortK='conflitos',sortDesc=true;
 function drawAll(rows){
   const q=document.getElementById('busca').value.toLowerCase(),fc=document.getElementById('fclasse').value,fd=document.getElementById('fdia').value;
