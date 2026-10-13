@@ -1,5 +1,5 @@
 #!/bin/bash
-# Uso: ./rodar.sh historico.xlsx [future_jobs.xlsx]
+# Uso: ./rodar.sh historico.xlsx [future_jobs_mes1.xlsx future_jobs_mes2.xlsx ...]
 set -e
 cd "$(dirname "$0")"
 python3 carregar.py "$@"

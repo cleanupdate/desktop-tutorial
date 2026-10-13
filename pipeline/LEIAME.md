@@ -2,7 +2,7 @@
 
 Entrada (exportar do sistema toda semana):
 1. **Histórico** de limpezas desde 01/01 (mesmo formato de `History_260101-261013.xlsx`).
-2. **Future Jobs Report** do mês (opcional; usado para horários já combinados).
+2. **Future Jobs Report** do mês (opcional). Na última semana do mês, mandar também o do mês seguinte: `./rodar.sh historico.xlsx future_out.xlsx future_nov.xlsx`.
 
 Rodar:
 ```
