@@ -1,0 +1,101 @@
+{
+ "equipes": {
+  "2": {
+   "nome": "Raiana + Yasmin",
+   "pessoas": 2,
+   "casas_normal": 3,
+   "casas_max": 4,
+   "dias": "seg-sex",
+   "pagamento": "?"
+  },
+  "3": {
+   "nome": "Débora",
+   "pessoas": 1,
+   "casas_normal": 2,
+   "casas_max": 2,
+   "dias": "seg-dom",
+   "pagamento": "debora"
+  },
+  "4": {
+   "nome": "Priscila + Patricia",
+   "pessoas": 2,
+   "casas_normal": 3,
+   "casas_max": 4,
+   "dias": "seg-sex",
+   "pagamento": "?"
+  },
+  "5": {
+   "nome": "Ana",
+   "pessoas": 1,
+   "casas_normal": 2,
+   "casas_max": 3,
+   "dias": "seg-sex",
+   "pagamento": "?"
+  },
+  "6": {
+   "nome": "Paula L.",
+   "pessoas": 1,
+   "casas_normal": 1,
+   "casas_max": 1,
+   "dias": "ter-qui",
+   "pagamento": "70",
+   "so_9h": true
+  },
+  "8": {
+   "nome": "Melany + Sara + Evin",
+   "pessoas": 3,
+   "casas_normal": 4,
+   "casas_max": 5,
+   "dias": "seg-sex",
+   "pagamento": "?"
+  },
+  "9": {
+   "nome": "Helen",
+   "pessoas": 1,
+   "casas_normal": 2,
+   "casas_max": 3,
+   "dias": "seg-sex",
+   "pagamento": "70"
+  },
+  "10": {
+   "nome": "Rayssa",
+   "pessoas": 1,
+   "casas_normal": 2,
+   "casas_max": 2,
+   "dias": "qua-sex",
+   "pagamento": "70"
+  },
+  "11": {
+   "nome": "Leticia",
+   "pessoas": 1,
+   "casas_normal": 2,
+   "casas_max": 2,
+   "dias": "seg-dom",
+   "pagamento": "70",
+   "reserva": true
+  },
+  "1": {
+   "nome": "Paula G.",
+   "pessoas": 1,
+   "casas_normal": 2,
+   "casas_max": 3,
+   "dias": "seg-dom",
+   "pagamento": "dona",
+   "reserva": true
+  }
+ },
+ "cliente_fixo_na_equipe": {
+  "Melissa Fishman": "4",
+  "Kerry": "4",
+  "Catherine Amani": "4"
+ },
+ "clientes_ignorados": [
+  "Paula Gregorio"
+ ],
+ "frequencias_encaixe": [
+  "Cada 4 Semanas",
+  "Cada 5 Semanas",
+  "Cada 6 Semanas",
+  "Cada 8 Semanas"
+ ]
+}

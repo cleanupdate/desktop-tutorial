@@ -1,0 +1,4 @@
+work/
+out/
+*.xlsx
+__pycache__/

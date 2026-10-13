@@ -1,0 +1,361 @@
+<style>
+.lp{font-family:var(--font-anthropic-sans);display:flex;flex-direction:column;gap:var(--cds-gap-lg)}
+.lp h1{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);margin:0;text-wrap:balance}
+.lp h2{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);margin:0}
+.lp .take{color:var(--color-fg-muted);margin:var(--cds-gap-xs) 0 0;max-width:70ch}
+.lp .note{color:var(--color-fg-muted);font-size:var(--cds-font-size-caption);margin:2px 0 var(--cds-gap-sm)}
+.lp .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,10rem),1fr));gap:var(--cds-gap-md)}
+.lp .tile,.lp .card{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);min-width:0}
+.lp .tile .lab{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.lp .tile .big{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);font-variant-numeric:tabular-nums;margin-top:var(--cds-gap-xs)}
+.lp .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:var(--cds-gap-md)}
+.lp .scroll{overflow:auto;max-height:26rem}
+.lp table{border-collapse:collapse;width:100%;font-size:var(--cds-font-size-caption);font-variant-numeric:tabular-nums}
+.lp th,.lp td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--color-border-line);vertical-align:top}
+.lp th{position:sticky;top:0;background:var(--color-panel);font-weight:var(--cds-font-weight-medium);color:var(--color-fg-muted);white-space:nowrap}
+.lp th button{all:unset;cursor:pointer}
+.lp th button:focus-visible{outline:2px solid var(--color-fg)}
+.lp td.n,.lp th.n{text-align:right}
+.lp .pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:var(--cds-font-size-caption);border:1px solid var(--color-border-line);white-space:nowrap}
+.lp .pill.Fixo{color:var(--color-ok)}.lp .pill.Quase{color:var(--color-warn)}.lp .pill.Instavel{color:var(--color-bad)}.lp .pill.Encaixe{color:var(--color-fg-muted)}
+.lp .day{font-weight:var(--cds-font-weight-medium)}
+.lp .ctrl{display:flex;flex-wrap:wrap;gap:var(--cds-gap-sm);margin-bottom:var(--cds-gap-sm)}
+.lp input,.lp select{font:inherit;padding:4px 8px;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background:var(--color-bg);color:var(--color-fg);min-width:0}
+.lp .chart{position:relative;min-height:260px}
+.lp .tip{position:absolute;background:var(--cds-surface-popover);border:1px solid var(--cds-border);border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);padding:var(--cds-pad-xs) var(--cds-pad-sm);font-size:var(--cds-font-size-caption);pointer-events:none}
+.lp .tip .d{color:var(--cds-text-secondary)}
+.lp .legend{display:flex;gap:var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);flex-wrap:wrap}
+.lp .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.lp .heat td.n{border-radius:4px}
+.lp ul.def{margin:0;padding-left:1.2em;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);display:grid;gap:4px}
+.lp .nav{display:flex;align-items:center;justify-content:space-between;gap:var(--cds-gap-sm);background:var(--color-fg);color:var(--color-bg);border-radius:6px;padding:6px 8px;margin-bottom:var(--cds-gap-md)}
+.lp .nav button{all:unset;cursor:pointer;padding:2px 12px;font-size:1.1rem;line-height:1;border-radius:4px}
+.lp .nav button:focus-visible{outline:2px solid var(--color-bg)}
+.lp .nav button:disabled{opacity:.3;cursor:default}
+.lp .nav .dt{font-weight:var(--cds-font-weight-medium);letter-spacing:.04em;text-transform:uppercase;font-size:var(--cds-font-size-caption);text-align:center}
+.lp .nav .dt small{display:block;font-weight:400;opacity:.75;text-transform:none;letter-spacing:0}
+.lp .teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr));gap:var(--cds-gap-md)}
+.lp .tm{border-radius:6px;overflow:hidden;background:var(--color-bg);border:1px solid var(--color-border-line);min-width:0;display:flex;flex-direction:column}
+.lp .tm .hd{background:var(--tc);color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:5px 8px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 8px;white-space:nowrap}
+.lp .tm .hd small{font-weight:400;text-transform:none;letter-spacing:0;opacity:.9;font-size:var(--cds-font-size-caption)}
+.lp .tm .bd{padding:6px;display:flex;flex-direction:column;gap:4px}
+.lp .tm .av{display:flex;gap:4px;margin-bottom:2px}
+.lp .tm .av span{width:28px;height:28px;border-radius:6px;background:var(--tc);color:#fff;display:grid;place-items:center;font-size:.75rem;font-weight:700}
+.lp .tm .job{display:flex;border-radius:4px;overflow:hidden;background:color-mix(in srgb,var(--tc) 32%,var(--color-panel));font-size:var(--cds-font-size-caption);min-width:0}
+.lp .tm .job .h{background:color-mix(in srgb,var(--tc) 70%,#000 0%);color:#fff;padding:4px 6px;white-space:nowrap;font-variant-numeric:tabular-nums;min-width:4.4em;text-align:center}
+.lp .tm .job .n{padding:4px 6px;color:var(--color-fg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.lp .tm .job.enc{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--tc) 22%,var(--color-panel)) 0 6px,color-mix(in srgb,var(--tc) 34%,var(--color-panel)) 6px 12px)}
+.lp .tm .job .f{margin-left:auto;padding:4px 6px;color:var(--color-warn);font-weight:700}
+.lp .tm .vazio{color:var(--color-fg-muted);font-size:var(--cds-font-size-caption);padding:4px 2px}
+.lp .key{display:flex;flex-wrap:wrap;gap:var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-top:var(--cds-gap-md)}
+[data-dash-source-state=empty]{color:transparent}
+[data-dash-source-state=refreshing]{opacity:.5;transition:opacity var(--cds-dur-slow)}
+</style>
+<div class="lp">
+  <header>
+    <h1 id="titulo">Dias fixos por cliente</h1>
+    <p class="take dash-skeleton" id="take" data-source="resumo" data-field="texto" data-row="0">—</p>
+  </header>
+
+  <section class="tiles" id="kpis">
+    <div class="tile"><div class="lab">Clientes recorrentes analisados</div><div class="big dash-skeleton" data-source="kpis" data-field="recorrentes" data-row="0">—</div></div>
+    <div class="tile"><div class="lab">Semanais/quinzenais já em dia fixo</div><div class="big dash-skeleton" data-source="kpis" data-field="fixos" data-row="0">—</div></div>
+    <div class="tile"><div class="lab">Instáveis (&lt;60% no mesmo dia)</div><div class="big dash-skeleton" data-source="kpis" data-field="instaveis" data-row="0">—</div></div>
+    <div class="tile"><div class="lab">Encaixe (a cada 4+ semanas)</div><div class="big dash-skeleton" data-source="kpis" data-field="encaixe" data-row="0">—</div></div>
+    <div class="tile"><div class="lab">Clientes com conflito</div><div class="big dash-skeleton" data-source="kpis" data-field="com_conflito" data-row="0">—</div></div>
+    <div class="tile"><div class="lab">Precisam de ajuste</div><div class="big dash-skeleton" data-source="kpis" data-field="ajustes" data-row="0">—</div></div>
+  </section>
+
+  <section class="grid">
+    <div class="card" id="carga-card">
+      <h2>Carga por dia da semana</h2>
+      <p class="note">Horas por semana dos clientes de dia fixo. A proposta move clientes flexíveis para equilibrar; o encaixe (5 semanas) preenche a folga que sobra.</p>
+      <div class="legend"><span><span class="sw" style="background:var(--cds-chart-muted)"></span>Sem ajuste</span><span><span class="sw" id="sw1"></span>Proposta (dia fixo)</span><span><span class="sw" id="sw2"></span>Encaixe</span></div>
+      <div class="chart" id="carga" data-source="carga"></div>
+    </div>
+    <div class="card" id="equipes-card">
+      <h2>Equipes × dia (proposta)</h2>
+      <p class="note">Visitas por semana de cada equipe em cada dia, já com os dias fixos.</p>
+      <div class="scroll"><table class="heat" id="tbl-eq" data-source="equipes" data-row-key="equipe"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="card" id="mensal-card">
+    <h2>Limpezas por mês</h2>
+    <p class="note">Volume concluído em 2026. Outubro vai só até o dia 13.</p>
+    <div class="chart" id="mensal" data-source="mensal" style="min-height:200px"></div>
+  </section>
+
+  <section class="card" id="agenda-card">
+    <h2>Simulação da agenda: próximas 2 semanas</h2>
+    <p class="note dash-skeleton" id="agenda-resumo" data-source="agenda_resumo" data-field="texto" data-row="0">—</p>
+    <div class="nav"><button id="dprev" aria-label="Dia anterior">‹</button><div class="dt" id="dlabel">—</div><button id="dnext" aria-label="Próximo dia">›</button></div>
+    <div class="teams" id="agenda" data-source="agenda"></div>
+    <div class="key"><span><b style="color:var(--color-warn)">↻</b> equipe de costume cheia ou ocupada: foi para outra</span><span>⏱ começa depois do horário de costume</span><span><b style="color:var(--color-bad)">!</b> cliente com reclamação: não mandar quem está indicado</span><span>Listrado = encaixe</span><span>No topo de cada equipe: casas do dia / casas normais · valor das limpezas · o que sobra para a empresa (quando o pagamento é por % ou diária conhecida)</span><span>Passe o mouse para ver detalhes</span></div>
+    <p class="note" style="margin-top:var(--cds-gap-sm)">Regras: equipe de 2 pessoas faz 3 casas (até 4), de 3 pessoas faz 4 (até 5), quem trabalha sozinha faz 2 (Helen e Ana até 3). Rayssa só de quarta a sexta; Paula L. só terça a quinta, 1 casa por dia, sempre às 9h. Melissa Fishman, Kerry e Catherine Amani sempre com a Eq 4. Horário e duração: os já marcados na agenda de outubro; se não houver, a média do histórico. Paula G. (Eq 1) e Leticia (Eq 11) ficam de reserva. Cada cliente vai no dia e horário fixos com a equipe de quem fez a última limpeza, nunca com quem teve reclamação ali; se a equipe está cheia ou ocupada (mais de 1h de atraso), vai para outra. Encaixes só entram onde sobra casa.</p>
+  </section>
+
+  <section class="grid">
+    <div class="card" id="conflitos-card">
+      <h2>Mais conflitos</h2>
+      <p class="note">Visitas fora do ciclo combinado (remarcadas) + cancelamentos.</p>
+      <div class="scroll"><table id="tbl-conf" data-source="clientes" data-row-key="cliente"><thead><tr><th data-field="cliente">Cliente</th><th data-field="historico">Dias usados</th><th class="n" data-field="conflitos">Conflitos</th><th data-field="dia_ideal">Dia ideal</th><th data-field="horario_ideal">Horário</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card" id="mudancas-card">
+      <h2>Mais mudaram de dia</h2>
+      <p class="note">Vezes em que a visita caiu em dia da semana diferente da anterior. Sem os clientes de encaixe.</p>
+      <div class="scroll"><table id="tbl-mud" data-source="clientes" data-row-key="cliente"><thead><tr><th data-field="cliente">Cliente</th><th class="n" data-field="mudancas_dia">Mudanças</th><th class="n" data-field="trocas_equipe">Trocas de equipe</th><th data-field="dia_ideal">Dia ideal</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="card" id="ajustes-card">
+    <h2>Ajustes sugeridos</h2>
+    <p class="note">Clientes que não estão em dia fixo hoje. "Mover" equilibra a semana; "Combinar" fixa o dia mais usado.</p>
+    <div class="scroll"><table id="tbl-aj" data-source="clientes" data-row-key="cliente"><thead><tr><th data-field="cliente">Cliente</th><th data-field="frequencia">Frequência</th><th data-field="historico">Dias usados</th><th data-field="acao">Sugestão</th><th data-field="horario_ideal">Horário</th><th data-field="equipe">Equipe</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="card" id="encaixe-card">
+    <h2>Clientes de encaixe</h2>
+    <p class="note">Entram quando sobra horário. Dia preferido é o dia com mais folga entre os que o cliente já aceitou.</p>
+    <div class="scroll"><table id="tbl-enc" data-source="clientes" data-row-key="cliente"><thead><tr><th data-field="cliente">Cliente</th><th data-field="frequencia">Frequência</th><th data-field="historico">Dias usados</th><th data-field="dia_ideal">Dia preferido</th><th data-field="equipe">Equipe</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="card" id="equipes-hist-card">
+    <h2>Equipes ao longo do ano</h2>
+    <p class="note">Quem formou cada equipe em cada mês (quem fez pelo menos 30% das limpezas da equipe naquele mês). Em laranja, o mês em que a formação mudou.</p>
+    <div style="overflow-x:auto"><table id="tbl-hist" data-source="equipes_hist" data-row-key="equipe"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="grid">
+    <div class="card" id="saidas-card">
+      <h2>Quem saiu</h2>
+      <p class="note">Sem limpeza desde 01/09. Só quem fez 10 ou mais limpezas.</p>
+      <div class="scroll"><table id="tbl-said" data-source="saidas" data-row-key="pessoa"><thead><tr><th data-field="pessoa">Pessoa</th><th data-field="entrou">Primeira</th><th data-field="saiu">Última</th><th class="n" data-field="limpezas">Limpezas</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="card" id="reclam-card">
+      <h2>Reclamações (relimpezas)</h2>
+      <p class="note">Quem fez a limpeza que precisou ser refeita. Se a pessoa não voltou a limpar ali depois, fica marcada para não mandar.</p>
+      <div class="scroll"><table id="tbl-rec" data-source="reclamacoes" data-row-key="id"><thead><tr><th data-field="data">Data</th><th data-field="cliente">Cliente</th><th data-field="quem_fez">Quem fez</th><th data-field="nao_mandar">Não mandar</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="card" id="todos-card">
+    <h2>Todos os clientes</h2>
+    <p class="note">Busque ou filtre. Clique no título da coluna para ordenar.</p>
+    <div class="ctrl">
+      <input id="busca" type="search" placeholder="Buscar cliente ou equipe" aria-label="Buscar">
+      <select id="fclasse" aria-label="Classe"><option value="">Todas as classes</option><option>Fixo</option><option>Quase fixo</option><option>Instável</option><option>Encaixe</option></select>
+      <select id="fdia" aria-label="Dia ideal"><option value="">Todos os dias</option><option>Seg</option><option>Ter</option><option>Qua</option><option>Qui</option><option>Sex</option></select>
+    </div>
+    <div class="scroll" style="max-height:34rem"><table id="tbl-all" data-source="clientes" data-row-key="cliente"><thead><tr>
+      <th data-field="cliente"><button data-k="cliente">Cliente</button></th>
+      <th data-field="frequencia"><button data-k="frequencia">Frequência</button></th>
+      <th class="n" data-field="visitas"><button data-k="visitas" data-num="1">Visitas</button></th>
+      <th data-field="historico"><button data-k="historico">Dias usados</button></th>
+      <th data-field="dia_ideal"><button data-k="dia_ideal">Dia ideal</button></th>
+      <th data-field="horario_ideal"><button data-k="horario_ideal">Horário</button></th>
+      <th class="n" data-field="consistencia_pct"><button data-k="consistencia_pct" data-num="1">% no dia</button></th>
+      <th data-field="classe"><button data-k="classe">Classe</button></th>
+      <th class="n" data-field="conflitos"><button data-k="conflitos" data-num="1">Conflitos</button></th>
+      <th class="n" data-field="mudancas_dia"><button data-k="mudancas_dia" data-num="1">Mudanças</button></th>
+      <th data-field="equipe"><button data-k="equipe">Equipe</button></th>
+    </tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="card" id="metodo">
+    <h2>Como foi calculado</h2>
+    <ul class="def">
+      <li>Base: histórico de 02/01 a 13/10/2026. Ficaram fora: limpezas "Uma vez", Airbnb, clientes com só 1 visita e clientes sem limpeza nos últimos 60 dias.</li>
+      <li>Dia ideal: o dia da semana mais usado pelo cliente, com mais peso para visitas recentes (uma visita de 3 meses atrás vale metade de uma de hoje). Assim, quem mudou de dia no meio do ano fica com o dia novo.</li>
+      <li>Cliente que mudou de endereço: só contam as visitas no endereço novo.</li>
+      <li>Frequência e equipe: as atuais (última visita e equipe mais comum nas últimas 5 visitas).</li>
+      <li>% no dia: peso das visitas que caíram no dia ideal. Fixo ≥80%, Quase fixo 60–79%, Instável &lt;60%.</li>
+      <li>Encaixe: clientes a cada 4, 5, 6 ou 8 semanas. Não recebem dia fixo nem contam remarcação como conflito; entram nos dias com mais folga.</li>
+      <li>Horário ideal: mediana do horário de início nas visitas do dia ideal, arredondada para 30 min.</li>
+      <li>Conflito: visita remarcada (intervalo 2+ dias diferente da frequência combinada) ou cancelada.</li>
+      <li>Clientes semanais com mais de 1 visita por semana nas últimas 15 semanas recebem mais de um dia fixo.</li>
+      <li>Carga: horas medianas da limpeza × visitas por semana (semanal = 1, quinzenal = 0,5, a cada 5 semanas = 0,2).</li>
+    </ul>
+  </section>
+</div>
+<script>
+const DIAS=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+dash.calc('kpis',{title:'Resumo dos clientes',description:'Conta clientes por classe, com conflito e com ajuste sugerido.',inputs:['clientes'],
+  fn:(clientes)=>[{recorrentes:clientes.length,
+    fixos:clientes.filter(c=>c.classe==='Fixo').length,
+    encaixe:clientes.filter(c=>c.classe==='Encaixe').length,
+    instaveis:clientes.filter(c=>c.classe==='Instável').length,
+    com_conflito:clientes.filter(c=>Number(c.conflitos)>0).length,
+    ajustes:clientes.filter(c=>c.classe==='Quase fixo'||c.classe==='Instável').length}]});
+dash.calc('resumo',{title:'Frase de resumo',description:'Resume classes e o dia mais e menos carregado.',inputs:['clientes','carga'],
+  fn:(clientes,carga)=>{
+    const fixosT=clientes.filter(c=>c.classe!=='Encaixe'), fx=fixosT.filter(c=>c.classe==='Fixo').length, aj=fixosT.length-fx, en=clientes.length-fixosT.length;
+    const s=[...carga].sort((a,b)=>Number(b.horas_semana_sem_ajuste)-Number(a.horas_semana_sem_ajuste));
+    return [{texto:`Dos ${fixosT.length} clientes de dia fixo (semanais, quinzenais e mensais), ${fx} já caem quase sempre no mesmo dia e ${aj} precisam combinar ou mudar. ${s[0].dia} e ${s[1].dia} são os dias mais pesados e ${s[s.length-1].dia} o mais leve. Os ${en} clientes de encaixe vão para a folga que sobra.`}];}});
+
+const cls=c=>c==='Fixo'?'Fixo':c==='Quase fixo'?'Quase':c==='Encaixe'?'Encaixe':'Instavel';
+function fillRows(tb,rows,cols){
+  tb.replaceChildren();
+  rows.forEach(r=>{const tr=document.createElement('tr');
+    cols.forEach(([k,f])=>{const td=document.createElement('td');
+      if(['conflitos','mudancas_dia','trocas_equipe','visitas','consistencia_pct'].includes(k))td.className='n';
+      if(k==='classe'){const s=document.createElement('span');s.className='pill '+cls(r[k]);s.textContent=r[k];td.append(s);}
+      else if(k==='dia_ideal'){td.className='day';td.textContent=r[k];}
+      else td.textContent=f?f(r[k]):r[k];
+      tr.append(td);});
+    tb.append(tr);});
+}
+const ph=(tb,n)=>{tb.replaceChildren();const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=n;td.textContent='—';td.className='dash-skeleton';tr.append(td);tb.append(tr);};
+
+
+dash.calc('agenda_resumo',{title:'Resumo da simulação',description:'Conta visitas, encaixes e trocas de equipe na agenda simulada.',inputs:['agenda'],
+  fn:(agenda)=>{const n=agenda.length,e=agenda.filter(v=>v.tipo==='encaixe').length,t=agenda.filter(v=>(v.obs||'').includes('foi para outra')).length,at=agenda.filter(v=>(v.obs||'').includes('depois do horário')).length,q=agenda.filter(v=>(v.obs||'').includes('ª casa')).length,c=agenda.filter(v=>v.conflito).length,
+      m=agenda.filter(v=>!v.obs&&v.motivo==='Mesma equipe da última limpeza').length,ev=agenda.filter(v=>v.evitar).length;
+    return [{texto:`${n} limpezas em 2 semanas, ${e} de encaixe. ${m} ficam com a mesma equipe da última limpeza; ${t} vão para outra equipe porque a de costume está cheia ou ocupada no horário, ${at} começam até 1h depois do horário de costume e ${q} são a casa extra da equipe${c?`; ${c} sem lugar`:''}. ${ev} visitas são de clientes com reclamação, e quem teve reclamação não foi escalado.`}];}});
+const TCOL=['#7e57c2','#c0855a','#4f93b8','#6aa84f','#b0a24a','#3fae8a','#b8578f','#8fa83f','#c0504d','#a8913a','#8a5cc2','#3aa6a0'];
+let dayIdx=0;
+const pdt=s=>{const[d,m]=s.split('/');return Number(m)*100+Number(d)};
+const ptm=s=>{const[h,m]=s.split(':');return Number(h)*60+Number(m)};
+const fmt12=s=>{let[h,m]=s.split(':').map(Number);const ap=h<12?'am':'pm';h=h%12||12;return `${h}:${String(m).padStart(2,'0')}${ap}`};
+const MESES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function drawAgenda(res){
+  const box=document.getElementById('agenda');box.replaceChildren();
+  const lab=document.getElementById('dlabel');
+  if(res.status!=='ok'){lab.textContent='—';return;}
+  const days=[...new Set(res.data.map(r=>r.data_txt))].sort((a,b)=>pdt(a)-pdt(b));
+  dayIdx=Math.max(0,Math.min(dayIdx,days.length-1));
+  const dt=days[dayIdx],rows=res.data.filter(r=>r.data_txt===dt);
+  const[dd,mm]=dt.split('/');
+  lab.textContent=`${rows[0].dia}, ${MESES[Number(mm)-1]} ${Number(dd)}`;
+  const sm=document.createElement('small');sm.textContent=`${rows.length} limpezas · ${d3.sum(rows,r=>Number(r.horas)).toLocaleString('pt-BR',{maximumFractionDigits:1})}h`;lab.append(sm);
+  document.getElementById('dprev').disabled=dayIdx===0;document.getElementById('dnext').disabled=dayIdx===days.length-1;
+  const allTeams=[...new Set(res.data.filter(r=>r.data_txt===dt).map(r=>r.equipe))].sort((a,b)=>parseInt(a.slice(3))-parseInt(b.slice(3)));
+  allTeams.forEach(t=>{
+    const num=parseInt(t.slice(3)),js=rows.filter(r=>r.equipe===t).sort((a,b)=>ptm(a.horario)-ptm(b.horario));
+    const card=document.createElement('div');card.className='tm';card.style.setProperty('--tc',TCOL[(num-1)%TCOL.length]);
+    const hd=document.createElement('div');hd.className='hd';hd.textContent='Equipe '+num;
+    const td=(dash.data('equipe_dia_sim').data||[]).find(z=>z.data_txt===dt&&z.equipe===t);
+    if(td){const sm=document.createElement('small');const c=Number(td.casas),n=Number(td.normal);
+      sm.textContent=`${c}/${n} casas · $${Number(td.receita).toLocaleString('en-US')}`+(td.margem!==''&&td.margem!=null?` · sobra $${Number(td.margem).toLocaleString('en-US')}`:'');
+      sm.title=c>n?'Acima do normal da equipe':c<n?`Cabe mais ${n-c} casa(s) — espaço para encaixe ou cliente novo`:'Equipe completa';hd.append(sm);
+      if(c<n){const f=document.createElement('div');f.className='vazio';f.textContent=`Espaço para mais ${n-c} casa${n-c>1?'s':''}`;card.dataset.livre=n-c;card._livre=f;}}
+    const bd=document.createElement('div');bd.className='bd';
+    const nm=(t.match(/\((.*)\)/)||[,''])[1].split('+').map(x=>x.trim()).filter(Boolean);
+    const av=document.createElement('div');av.className='av';nm.forEach(n=>{const sp=document.createElement('span');sp.textContent=n.slice(0,2).toUpperCase();sp.title=n;av.append(sp);});bd.append(av);
+    if(!js.length){const v=document.createElement('div');v.className='vazio';v.textContent='Sem limpezas';bd.append(v);}
+    js.forEach(r=>{const j=document.createElement('div');j.className='job'+(r.tipo==='encaixe'?' enc':'');
+      j.title=[r.cliente,`${r.horario}–${r.fim} · ${r.frequencia}`,r.motivo,r.obs,r.conflito,r.evitar?`Não mandar: ${r.evitar}`:''].filter(Boolean).join('\n');
+      const h=document.createElement('span');h.className='h';h.textContent=fmt12(r.horario);
+      const n=document.createElement('span');n.className='n';n.textContent=r.cliente.split(' (')[0];
+      j.append(h,n);
+      if(r.evitar){const f=document.createElement('span');f.className='f';f.style.color='var(--color-bad)';f.textContent='!';j.append(f);}
+      const ob=r.obs||'';
+      if(ob.includes('foi para outra')||r.conflito){const f=document.createElement('span');f.className='f';f.textContent='↻';j.append(f);}
+      else if(ob.includes('depois do horário')){const f=document.createElement('span');f.className='f';f.style.color='var(--color-fg-muted)';f.textContent='⏱';j.append(f);}
+      bd.append(j);});
+    if(card._livre)bd.append(card._livre);
+    card.append(hd,bd);box.append(card);});
+}
+document.getElementById('dprev').addEventListener('click',()=>{dayIdx--;drawAgenda(dash.data('agenda'));});
+document.getElementById('dnext').addEventListener('click',()=>{dayIdx++;drawAgenda(dash.data('agenda'));});
+
+function drawHist(){
+  const h=dash.data('equipes_hist'),t=document.getElementById('tbl-hist');
+  if(h.status==='ok'){const cols=h.columns||Object.keys(h.data[0]);const tr=document.createElement('tr');
+    cols.forEach(c=>{const th=document.createElement('th');th.dataset.field=c;th.textContent=c==='equipe'?'Equipe':c;tr.append(th);});t.tHead.replaceChildren(tr);
+    t.tBodies[0].replaceChildren();h.data.forEach(r=>{const tr=document.createElement('tr');cols.forEach((c,i)=>{const td=document.createElement('td');td.textContent=r[c];
+      if(i>1&&r[c]&&r[c]!==r[cols[i-1]]&&r[cols[i-1]])td.style.color='var(--color-warn)';tr.append(td);});t.tBodies[0].append(tr);});}
+  const s=dash.data('saidas');if(s.status==='ok')fillRows(document.querySelector('#tbl-said tbody'),s.data,[['pessoa'],['entrou'],['saiu'],['limpezas']]);
+  const r=dash.data('reclamacoes'),tb=document.querySelector('#tbl-rec tbody');
+  if(r.status==='ok'){tb.replaceChildren();r.data.forEach(x=>{const tr=document.createElement('tr');tr.dataset.key=x.id;
+    [x.data,x.cliente.split(' (')[0],x.quem_fez,x.nao_mandar||(x.situacao==='Pessoas já saíram'?'— (já saíram)':'— (já voltou a limpar)')].forEach((v,i)=>{const td=document.createElement('td');td.textContent=v;if(i===3&&x.nao_mandar)td.style.color='var(--color-bad)';tr.append(td);});tb.append(tr);});}
+}
+let sortK='conflitos',sortDesc=true;
+function drawAll(rows){
+  const q=document.getElementById('busca').value.toLowerCase(),fc=document.getElementById('fclasse').value,fd=document.getElementById('fdia').value;
+  const btn=document.querySelector(`#tbl-all button[data-k="${sortK}"]`),num=btn&&btn.dataset.num;
+  let r=rows.filter(x=>(!q||(x.cliente+' '+x.equipe).toLowerCase().includes(q))&&(!fc||x.classe===fc)&&(!fd||x.dia_ideal.split('/').includes(fd)));
+  r.sort((a,b)=>{const A=num?Number(a[sortK]):a[sortK],B=num?Number(b[sortK]):b[sortK];return (A>B?1:A<B?-1:0)*(sortDesc?-1:1);});
+  document.querySelectorAll('#tbl-all th').forEach(th=>th.removeAttribute('aria-sort'));
+  if(btn)btn.parentElement.setAttribute('aria-sort',sortDesc?'descending':'ascending');
+  fillRows(document.querySelector('#tbl-all tbody'),r,[['cliente'],['frequencia'],['visitas'],['historico'],['dia_ideal'],['horario_ideal'],['consistencia_pct',v=>v+'%'],['classe'],['conflitos'],['mudancas_dia'],['equipe']]);
+}
+let lastRows=[];
+['busca','fclasse','fdia'].forEach(id=>document.getElementById(id).addEventListener('input',()=>drawAll(lastRows)));
+document.querySelectorAll('#tbl-all th button').forEach(b=>b.addEventListener('click',()=>{if(sortK===b.dataset.k)sortDesc=!sortDesc;else{sortK=b.dataset.k;sortDesc=!!b.dataset.num;}drawAll(lastRows);}));
+
+function drawCarga(rows){
+  const box=document.getElementById('carga');box.replaceChildren();
+  const W=Math.max(280,box.clientWidth),H=260,m={t:16,r:8,b:28,l:36};
+  const data=rows.map(r=>({dia:r.dia,a:Number(r.horas_semana_sem_ajuste),p:Number(r.horas_semana_proposta),n:Number(r.limpezas_semana_real),e:Number(r.horas_semana_encaixe)}));
+  const x=d3.scaleBand(data.map(d=>d.dia),[m.l,W-m.r]).padding(0.25),x2=d3.scaleBand(['a','p'],[0,x.bandwidth()]).padding(0.12);
+  const y=d3.scaleLinear([0,d3.max(data,d=>Math.max(d.a,d.p+d.e))*1.12],[H-m.b,m.t]).nice();
+  const svg=d3.select(box).append('svg').attr('width','100%').attr('viewBox',`0 0 ${W} ${H}`);
+  svg.append('g').selectAll('line').data(y.ticks(5)).join('line').attr('x1',m.l).attr('x2',W-m.r).attr('y1',d=>y(d)).attr('y2',d=>y(d)).attr('stroke','var(--cds-chart-grid)');
+  svg.append('g').selectAll('text').data(y.ticks(5)).join('text').attr('x',m.l-6).attr('y',d=>y(d)+4).attr('text-anchor','end').attr('fill','var(--color-fg-muted)').attr('font-size','11').text(d=>d+'h');
+  svg.append('g').selectAll('text').data(data).join('text').attr('x',d=>x(d.dia)+x.bandwidth()/2).attr('y',H-8).attr('text-anchor','middle').attr('fill','var(--color-fg-muted)').attr('font-size','12').text(d=>d.dia);
+  const g=svg.append('g').selectAll('g').data(data).join('g').attr('transform',d=>`translate(${x(d.dia)},0)`);
+  const tip=document.createElement('div');tip.className='tip';tip.hidden=true;box.append(tip);
+  g.append('rect').attr('x',x2('a')).attr('width',x2.bandwidth()).attr('y',d=>y(d.a)).attr('height',d=>y(0)-y(d.a)).attr('rx',4).attr('fill','var(--cds-chart-muted)');
+  g.append('rect').attr('x',x2('p')).attr('width',x2.bandwidth()).attr('y',d=>y(d.p+d.e)).attr('height',d=>y(d.p)-y(d.p+d.e)+4).attr('rx',4).attr('fill',dash.colors[1]);
+  g.append('rect').attr('x',x2('p')).attr('width',x2.bandwidth()).attr('y',d=>y(d.p)).attr('height',d=>y(0)-y(d.p)).attr('rx',4).attr('fill',dash.colors[0]);
+  g.append('rect').attr('width',x.bandwidth()).attr('y',m.t).attr('height',H-m.b-m.t).attr('fill','transparent')
+    .on('mousemove',function(ev,d){const[px,py]=d3.pointer(ev,box);tip.hidden=false;tip.replaceChildren();
+      const a=document.createElement('div');a.className='d';a.textContent=d.dia+` · hoje ~${d.n.toLocaleString('pt-BR')} limpezas/sem`;
+      const b=document.createElement('div');b.textContent=`Sem ajuste: ${d.a.toLocaleString('pt-BR')} h`;
+      const c=document.createElement('div');c.textContent=`Proposta: ${d.p.toLocaleString('pt-BR')} h`;const e=document.createElement('div');e.textContent=`+ Encaixe: ${d.e.toLocaleString('pt-BR')} h`;tip.append(a,b,c,e);
+      tip.style.left=Math.min(px+12,box.clientWidth-tip.offsetWidth-4)+'px';tip.style.top=Math.max(0,py-50)+'px';})
+    .on('mouseleave',()=>tip.hidden=true);
+  document.getElementById('sw1').style.background=dash.colors[0];document.getElementById('sw2').style.background=dash.colors[1];
+}
+
+function drawMensal(rows){
+  const box=document.getElementById('mensal');box.replaceChildren();
+  const W=Math.max(280,box.clientWidth),H=200,m={t:18,r:8,b:26,l:8};
+  const MES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const data=rows.map(r=>({mes:r.mes,lab:MES[Number(r.mes.slice(5,7))-1],n:Number(r.limpezas),c:Number(r.cancelamentos)}));
+  const x=d3.scaleBand(data.map(d=>d.mes),[m.l,W-m.r]).padding(0.3);
+  const y=d3.scaleLinear([0,d3.max(data,d=>d.n)*1.1],[H-m.b,m.t]);
+  const svg=d3.select(box).append('svg').attr('width','100%').attr('viewBox',`0 0 ${W} ${H}`);
+  const last=data[data.length-1].mes;
+  svg.append('g').selectAll('rect').data(data).join('rect').attr('x',d=>x(d.mes)).attr('width',x.bandwidth()).attr('y',d=>y(d.n)).attr('height',d=>y(0)-y(d.n)).attr('rx',4)
+    .attr('fill',d=>d.mes===last?'var(--cds-chart-muted)':dash.colors[0]);
+  svg.append('g').selectAll('text').data(data).join('text').attr('x',d=>x(d.mes)+x.bandwidth()/2).attr('y',d=>y(d.n)-5).attr('text-anchor','middle').attr('font-size','11').attr('fill','var(--color-fg-muted)').text(d=>d.n.toLocaleString('pt-BR'));
+  svg.append('g').selectAll('text').data(data).join('text').attr('x',d=>x(d.mes)+x.bandwidth()/2).attr('y',H-8).attr('text-anchor','middle').attr('font-size','12').attr('fill','var(--color-fg-muted)').text(d=>d.lab);
+}
+
+function drawEq(res){
+  const t=document.getElementById('tbl-eq'),th=t.tHead,tb=t.tBodies[0];
+  if(res.status!=='ok'){th.replaceChildren();ph(tb,6);return;}
+  const cols=(res.columns||Object.keys(res.data[0])).filter(c=>c!=='equipe');
+  const tr=document.createElement('tr');const h0=document.createElement('th');h0.dataset.field='equipe';h0.textContent='Equipe';tr.append(h0);
+  cols.forEach(c=>{const h=document.createElement('th');h.className='n';h.dataset.field=c;h.textContent=c;tr.append(h);});th.replaceChildren(tr);
+  const mx=d3.max(res.data,r=>d3.max(cols,c=>Number(r[c])));
+  tb.replaceChildren();
+  res.data.forEach(r=>{const tr=document.createElement('tr');const td=document.createElement('td');td.textContent=r.equipe;tr.append(td);
+    cols.forEach(c=>{const v=Number(r[c]),td=document.createElement('td');td.className='n';td.textContent=v?v.toLocaleString('pt-BR',{minimumFractionDigits:1}):'·';
+      if(v)td.style.background=`color-mix(in srgb, ${dash.colors[0]} ${Math.round(8+60*v/mx)}%, transparent)`;tr.append(td);});
+    tb.append(tr);});
+}
+
+dash.onData(()=>{
+  const mm=dash.data('mensal');if(mm.status==='ok')drawMensal(mm.data);else document.getElementById('mensal').replaceChildren();
+  drawHist();
+  const ag=dash.data('agenda'),ar=dash.data('agenda_resumo');drawAgenda(ag);
+  const are=document.getElementById('agenda-resumo');if(ar.status==='ok'){are.classList.remove('dash-skeleton');are.textContent=ar.data[0].texto;}else are.textContent='—';
+  const c=dash.data('clientes'),k=dash.data('kpis'),s=dash.data('resumo'),g=dash.data('carga'),e=dash.data('equipes');
+  document.querySelectorAll('[data-source="kpis"]').forEach(el=>{if(k.status==='ok'){el.classList.remove('dash-skeleton');el.textContent=Number(k.data[0][el.dataset.field]).toLocaleString('pt-BR');}else el.textContent='—';});
+  const tk=document.getElementById('take');if(s.status==='ok'){tk.classList.remove('dash-skeleton');tk.textContent=s.data[0].texto;}else tk.textContent='—';
+  if(g.status==='ok')drawCarga(g.data);else document.getElementById('carga').replaceChildren();
+  drawEq(e);
+  const tbs=['#tbl-conf','#tbl-mud','#tbl-aj','#tbl-all','#tbl-enc'].map(q=>document.querySelector(q+' tbody'));
+  if(c.status!=='ok'){tbs.forEach(t=>ph(t,6));return;}
+  const rows=c.data;lastRows=rows;
+  fillRows(tbs[0],[...rows].sort((a,b)=>Number(b.conflitos)-Number(a.conflitos)||Number(b.mudancas_dia)-Number(a.mudancas_dia)).slice(0,12),[['cliente'],['historico'],['conflitos'],['dia_ideal'],['horario_ideal']]);
+  fillRows(tbs[1],rows.filter(r=>r.classe!=='Encaixe').sort((a,b)=>Number(b.mudancas_dia)-Number(a.mudancas_dia)||Number(b.trocas_equipe)-Number(a.trocas_equipe)).slice(0,12),[['cliente'],['mudancas_dia'],['trocas_equipe'],['dia_ideal']]);
+  const ord=a=>a.startsWith('Mover')?0:a.startsWith('Várias')?1:2;
+  fillRows(tbs[2],rows.filter(r=>/^(Mover|Várias|Combinar)/.test(r.acao)).sort((a,b)=>ord(a.acao)-ord(b.acao)||Number(a.consistencia_pct)-Number(b.consistencia_pct)),[['cliente'],['frequencia'],['historico'],['acao'],['horario_ideal'],['equipe']]);
+  fillRows(tbs[4],rows.filter(r=>r.classe==='Encaixe').sort((a,b)=>a.dia_ideal.localeCompare(b.dia_ideal)),[['cliente'],['frequencia'],['historico'],['dia_ideal'],['equipe']]);
+  drawAll(rows);
+});
+</script>
